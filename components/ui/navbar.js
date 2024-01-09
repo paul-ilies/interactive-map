@@ -9,7 +9,7 @@ const Navbar = () => {
     <div className="w-full bg-white">
       <header className="max-w-6xl flex justify-between items-center m-auto px-2">
         <div className="py-[11px]">
-          <Image src="/ljm-logo-green.png" width={214} height={34} alt="logo" />
+          <Image src="/rsz_launsfert.png" width={214} height={34} alt="logo" />
         </div>
         <div className="flex items-center">
           <ul className="flex text-[15px]">

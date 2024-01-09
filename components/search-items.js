@@ -27,7 +27,7 @@ const SearchItems = () => {
             className="absolute top-[19px] left-[20px]"
           />
           <Input
-            placeholder="Cauta pe Lajumate.ro"
+            placeholder="Cauta pe Launsfert.ro"
             value={searchInputText}
             onChange={(e) => setSearchInputText(e.target.value)}
             className="h-full border-0 shadow-none focus-visible:ring-0 pl-[55px] pr-[48px] text-[18px] py-0 placeholder:text-[20px]"

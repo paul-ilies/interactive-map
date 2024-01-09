@@ -6,7 +6,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import { Button } from "./ui/button";
 import { ClipLoader } from "react-spinners";
 import RegionsColumn from "./regions-column";
-import useClickAway from "@/app/hooks/useClickAway";
+import useClickAway from "@/hooks/useClickAway";
 
 const CountryMap = lazy(() => import("./country-map"));
 
