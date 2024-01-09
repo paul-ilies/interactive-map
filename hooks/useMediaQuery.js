@@ -1,25 +1,28 @@
-import * as React from "react";
+import { useEffect, useState } from 'react';
 
-export default function useMediaQuery(query) {
-  const subscribe = React.useCallback(
-    (callback) => {
-      const matchMedia = window.matchMedia(query);
+export const useMediaQuery = (query) => {
+  const isClient = typeof window === 'object';
 
-      matchMedia.addEventListener("change", callback);
+  const [matches, setMatches] = useState(() => {
+    if (isClient) {
+      return window.matchMedia(query).matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (isClient) {
+      const mediaQueryList = window.matchMedia(query);
+      const handleChange = (event) => setMatches(event.matches);
+
+      mediaQueryList.addEventListener('change', handleChange);
+      setMatches(mediaQueryList.matches);
+
       return () => {
-        matchMedia.removeEventListener("change", callback);
+        mediaQueryList.removeEventListener('change', handleChange);
       };
-    },
-    [query]
-  );
+    }
+  }, [query, isClient]);
 
-  const getSnapshot = () => {
-    return window.matchMedia(query).matches;
-  };
-
-  const getServerSnapshot = () => {
-    throw Error("useMediaQuery is a client-only hook");
-  };
-
-  return React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-}
+  return matches;
+};
