@@ -1,105 +1,99 @@
 "use client";
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  Marker,
-} from "react-simple-maps";
-import { geoCentroid } from "d3-geo";
-import mapData from "../utils/mapdata.geojson";
-const prescurtariJudete = {
-  Alba: "AB",
-  Arad: "AR",
-  Arges: "AG",
-  Bacau: "BC",
-  Bihor: "BH",
-  "Bistrita-Nasaud": "BN",
-  Botosani: "BT",
-  Braila: "BR",
-  Brasov: "BV",
-  Bucuresti: "B",
-  Buzau: "BZ",
-  Calarasi: "CL",
-  "Caras-Severin": "CS",
-  Cluj: "CJ",
-  Constanta: "CT",
-  Covasna: "CV",
-  Dambovita: "DB",
-  Dolj: "DJ",
-  Galati: "GL",
-  Giurgiu: "GR",
-  Gorj: "GJ",
-  Harghita: "HR",
-  Hunedoara: "HD",
-  Ialomita: "IL",
-  Iasi: "IS",
-  Ilfov: "IF",
-  Maramures: "MM",
-  Mehedinti: "MH",
-  Mures: "MS",
-  Neamt: "NT",
-  Olt: "OT",
-  Prahova: "PH",
-  Salaj: "SJ",
-  "Satu Mare": "SM",
-  Sibiu: "SB",
-  Suceava: "SV",
-  Teleorman: "TR",
-  Timis: "TM",
-  Tulcea: "TL",
-  Valcea: "VL",
-  Vaslui: "VS",
-  Vrancea: "VN",
-};
+import { useState, useCallback, lazy, Suspense } from "react";
+import { states } from "@/utils/states";
+import StateItem from "./state-item";
+import { IoCloseOutline } from "react-icons/io5";
+import { Button } from "./ui/button";
+import { ClipLoader } from "react-spinners";
+import RegionsColumn from "./regions-column";
+import useClickAway from "@/app/hooks/useClickAway";
 
-const InteractiveMap = () => {
+const CountryMap = lazy(() => import("./country-map"));
+
+const InteractiveMap = ({ handleCloseMap }) => {
+  const [activeState, setActiveState] = useState(null);
+  const [regionHovered, setRegionHovered] = useState(null);
+  const ref = useClickAway(()=>{
+   handleCloseMap()
+  })
+  const handleActiveState = useCallback((state) => {
+    setActiveState(state);
+  }, []);
+
+  const handleRegion = useCallback((state) => {
+    setRegionHovered(state);
+  }, []);
+
   return (
-    <div className="absolute  z-50 -bottom-[305px] m-auto bg-white max-w-5xl w-full h-[390px] rounded-[9px] drop-shadow-xl ">
-      <div className="flex w-full h-full">
-        <div className="w-[54%]">
-          <ComposableMap
-            style={{ width: "100%", height: "100%" }}
-            projection="geoMercator"
-            projectionConfig={{
-              scale: 4700,
-              center: [25, 46],
-            }}
-            stroke="white"
-            stroke-width={1.2}
-            fill="#009688"
+    <div ref={ref} className="absolute  z-50 -bottom-[305px] m-auto bg-white max-w-5xl w-full h-[390px] rounded-[9px] drop-shadow-xl ">
+      <div className="relative flex w-full h-full">
+        <Button
+          onClick={handleCloseMap}
+          className="w-[46px] h-[46px] absolute right-0 top-0 p-0 cursor-pointer z-[50]"
+          variant="link"
+        >
+          <IoCloseOutline className="w-[25px] h-[25px]  text-gray-400" />
+        </Button>
+        <div className="w-[54%] flex justify-center items-center ">
+          <Suspense
+            fallback={
+              <ClipLoader
+                size={50}
+                color="#009688"
+                speedMultiplier={0.6}
+                cssOverride={{ borderWidth: "5px" }}
+              />
+            }
           >
-            <Geographies geography={mapData?.features}>
-              {({ geographies }) => {
-                return (
-                  <>
-                    {geographies.map((geo) => {
-                      if (geo.id === "5944") return null;
-                      return <Geography key={geo?.rsmKey} geography={geo} />;
-                    })}
-                    {geographies.map((geo) => {
-                      const provinceCenter = geoCentroid(geo);
-                      const clujPlacement = [23.614967497008553,46.77209999584197]
-                      const neamtPlacement =[26.3036193984180,46.9317225663707]
-                      return (
-                        <Marker key={geo.rsmKey} coordinates={
-                            geo?.properties?.name === "Cluj" ? clujPlacement : geo.properties?.name === "Neamt" ? neamtPlacement : provinceCenter}>
-                          <text 
-                          style={{
-                            fill:"white",
-                            strokeWidth:0
-                          }}
-                          textAnchor='middle'
-                          className="text-[25px] font-medium">{prescurtariJudete[geo.properties.name]}</text>
-                        </Marker>
-                      );
-                    })}
-                  </>
-                );
-              }}
-            </Geographies>
-          </ComposableMap>
+            <CountryMap
+              handleActiveState={handleActiveState}
+              activeState={activeState}
+              regionHovered={regionHovered}
+              states={states}
+              handleRegion={handleRegion}
+            />
+          </Suspense>
         </div>
-        <div className="flex-1 relative bg-orange">
+        <div className="flex-1 flex relative bg-orange py-[30px] pr-[15px]">
+          <Suspense
+            fallback={
+              <ClipLoader
+                size={50}
+                color="#009688"
+                speedMultiplier={0.6}
+                cssOverride={{ borderWidth: "5px" }}
+              />
+            }
+          >
+            <RegionsColumn
+              states={states}
+              startIndex={0}
+              endIndex={10}
+              child={<StateItem label="Toata Romania" className="font-black" />}
+              regionHovered={regionHovered}
+              handleRegion={handleRegion}
+            />
+            <RegionsColumn
+              states={states}
+              startIndex={10}
+              endIndex={21}
+              regionHovered={regionHovered}
+              handleRegion={handleRegion}
+            />
+            <RegionsColumn
+              states={states}
+              startIndex={21}
+              endIndex={32}
+              regionHovered={regionHovered}
+              handleRegion={handleRegion}
+            />
+            <RegionsColumn
+              states={states}
+              startIndex={32}
+              regionHovered={regionHovered}
+              handleRegion={handleRegion}
+            />
+          </Suspense>
           <div className="w-[20px] h-[20px] bg-white rotate-45 absolute -top-[10px] left-[10px] z-[1000]" />
         </div>
       </div>
