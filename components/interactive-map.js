@@ -13,9 +13,9 @@ const CountryMap = lazy(() => import("./country-map"));
 const InteractiveMap = ({ handleCloseMap }) => {
   const [activeState, setActiveState] = useState(null);
   const [regionHovered, setRegionHovered] = useState(null);
-  const ref = useClickAway(()=>{
-   handleCloseMap()
-  })
+  const ref = useClickAway(() => {
+    handleCloseMap();
+  });
   const handleActiveState = useCallback((state) => {
     setActiveState(state);
   }, []);
@@ -25,7 +25,10 @@ const InteractiveMap = ({ handleCloseMap }) => {
   }, []);
 
   return (
-    <div ref={ref} className="absolute  z-50 -bottom-[305px] m-auto bg-white max-w-5xl w-full h-[390px] rounded-[9px] drop-shadow-xl ">
+    <div
+      ref={ref}
+      className="absolute  z-50 -bottom-[305px] m-auto bg-white max-w-5xl w-full h-[390px] rounded-[9px] drop-shadow-xl "
+    >
       <div className="relative flex w-full h-full">
         <Button
           onClick={handleCloseMap}
@@ -69,27 +72,13 @@ const InteractiveMap = ({ handleCloseMap }) => {
               states={states}
               startIndex={0}
               endIndex={10}
-              child={<StateItem label="Toata Romania" className="font-black" />}
-              regionHovered={regionHovered}
-              handleRegion={handleRegion}
-            />
-            <RegionsColumn
-              states={states}
-              startIndex={10}
-              endIndex={21}
-              regionHovered={regionHovered}
-              handleRegion={handleRegion}
-            />
-            <RegionsColumn
-              states={states}
-              startIndex={21}
-              endIndex={32}
-              regionHovered={regionHovered}
-              handleRegion={handleRegion}
-            />
-            <RegionsColumn
-              states={states}
-              startIndex={32}
+              child={
+                <StateItem
+                  label="Toata Romania"
+                  className="font-black"
+                  isAllActive
+                />
+              }
               regionHovered={regionHovered}
               handleRegion={handleRegion}
             />

@@ -1,12 +1,10 @@
-import StateItem from "./state-item"
+import StateItem from "./state-item";
 
-const RegionsColumn = ({states,startIndex,endIndex,child,regionHovered,handleRegion})=>{
-    return (
-    <div className="h-full w-[25%] ">
-   {child}
-    {Object.keys(states)
-      .slice(startIndex, endIndex)
-      .map((state) => (
+const RegionsColumn = ({ states, child, regionHovered, handleRegion }) => {
+  return (
+    <div className="w-full columns-4">
+      {child}
+      {Object.keys(states).map((state) => (
         <StateItem
           key={state}
           label={state}
@@ -14,8 +12,8 @@ const RegionsColumn = ({states,startIndex,endIndex,child,regionHovered,handleReg
           handleRegion={handleRegion}
         />
       ))}
-  </div>
-  )
-}
+    </div>
+  );
+};
 
-export default RegionsColumn
+export default RegionsColumn;
